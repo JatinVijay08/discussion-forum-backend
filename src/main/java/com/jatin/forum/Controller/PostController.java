@@ -1,5 +1,7 @@
 package com.jatin.forum.Controller;
 
+import com.jatin.forum.DTO.CreatePostRequest;
+import com.jatin.forum.DTO.PostResponse;
 import com.jatin.forum.Service.PostService;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,8 +21,8 @@ public class PostController {
     }
 
     @PostMapping
-    public String createPost(){
-        return postService.createPost() ;
+    public PostResponse createPost(@RequestBody CreatePostRequest createPostRequest) {
+        return postService.createPost(createPostRequest) ;
     }
 
     @GetMapping("{id}")
