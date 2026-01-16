@@ -38,7 +38,6 @@ build/
 *.log
 
 # Spring Boot secrets
-src/main/resources/application.properties
 src/main/resources/application-local.properties
 .env
 
