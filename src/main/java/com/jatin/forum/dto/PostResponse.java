@@ -1,4 +1,4 @@
-package com.jatin.forum.DTO;
+package com.jatin.forum.dto;
 
 public record PostResponse(
         Long id,

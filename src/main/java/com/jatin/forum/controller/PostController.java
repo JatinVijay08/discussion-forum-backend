@@ -1,9 +1,11 @@
-package com.jatin.forum.Controller;
+package com.jatin.forum.controller;
 
-import com.jatin.forum.DTO.CreatePostRequest;
-import com.jatin.forum.DTO.PostResponse;
-import com.jatin.forum.Service.PostService;
+import com.jatin.forum.dto.CreatePostRequest;
+import com.jatin.forum.dto.PostResponse;
+import com.jatin.forum.service.PostService;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -16,7 +18,7 @@ public class PostController {
     }
 
     @GetMapping
-    public String getAllPosts() {
+    public List<PostResponse> getAllPosts() {
         return postService.getAllPosts() ;
     }
 
@@ -26,7 +28,7 @@ public class PostController {
     }
 
     @GetMapping("{id}")
-    public String getPostById(@PathVariable Long id){
+    public PostResponse getPostById(@PathVariable Long id){
         return postService.getPostById(id);
     }
 
