@@ -3,16 +3,20 @@ package com.jatin.forum.service;
 import com.jatin.forum.dto.CreatePostRequest;
 import com.jatin.forum.dto.PostResponse;
 import com.jatin.forum.entity.Post;
+import com.jatin.forum.entity.User;
 import com.jatin.forum.repository.PostRepo;
+import com.jatin.forum.repository.UserRepo;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
 
 @Service
 public class PostService {
+    private final UserRepo userRepo;
     private PostRepo postRepo;
-    public PostService(PostRepo postRepo) {
+    public PostService(PostRepo postRepo, UserRepo userRepo) {
         this.postRepo = postRepo;
+        this.userRepo = userRepo;
     }
 
 
@@ -25,7 +29,8 @@ public class PostService {
     }
 
     public PostResponse createPost(CreatePostRequest createPostRequest){
-        Post post = new Post(createPostRequest.title(),  createPostRequest.content());
+        User user = userRepo.findById(1L).orElseThrow(()-> new RuntimeException("User not found"));
+        Post post = new Post(createPostRequest.title(),  createPostRequest.content(),user);
         Post postSaved = postRepo.save(post);
         return new PostResponse(postSaved.getId(),postSaved.getTitle(),postSaved.getContent());
     }

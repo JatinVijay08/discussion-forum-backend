@@ -38,13 +38,24 @@ public class Post {
     }
 
 
-    public Post(String title, String content) {
+    public Post(String title, String content,User user) {
         this.title = title;
         this.content = content;
         this.createdAt = Instant.now();
+        this.user = user;
     }
 
-    public Post() {}
+    protected Post() {}
+
+
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    public User getUser() {
+        return user;
+    }
+
 
 
 }
