@@ -3,6 +3,7 @@ package com.jatin.forum.controller;
 import com.jatin.forum.dto.CreatePostRequest;
 import com.jatin.forum.dto.PostResponse;
 import com.jatin.forum.service.PostService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public class PostController {
     }
 
     @PostMapping
-    public PostResponse createPost(@RequestBody CreatePostRequest createPostRequest) {
+    public PostResponse createPost(@Valid @RequestBody CreatePostRequest createPostRequest) {
         return postService.createPost(createPostRequest) ;
     }
 
