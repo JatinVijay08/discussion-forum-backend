@@ -1,11 +1,10 @@
 package com.jatin.forum.service;
 
-import com.jatin.forum.config.SecurityConfig;
+import com.jatin.forum.JwtUtil;
 import com.jatin.forum.dto.LoginRequest;
 import com.jatin.forum.dto.RegisterRequest;
 import com.jatin.forum.entity.User;
 import com.jatin.forum.repository.UserRepo;
-import jakarta.security.auth.message.config.AuthConfig;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +14,12 @@ public class AuthService {
     private final UserRepo userRepo;
 
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
-    public AuthService(UserRepo userRepo, PasswordEncoder passwordEncoder) {
+    public AuthService(UserRepo userRepo, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
     }
 
     public void register(RegisterRequest registerRequest) {
@@ -30,7 +31,7 @@ public class AuthService {
         userRepo.save(user);
     }
 
-    public void login(LoginRequest loginRequest) {
+    public String login(LoginRequest loginRequest) {
         User user = userRepo.findByEmail(loginRequest.email());
         if (user == null) {
             throw new RuntimeException("User not found");
@@ -38,6 +39,8 @@ public class AuthService {
         if(!passwordEncoder.matches(loginRequest.password(), user.getPassword())) {
             throw new RuntimeException("Invalid Credentials");
         }
+
+        return jwtUtil.generateToken(user);
 
     }
 
