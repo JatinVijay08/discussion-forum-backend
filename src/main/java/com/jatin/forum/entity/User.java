@@ -33,5 +33,7 @@ public class User {
         this.created = Instant.now();
     }
 
-
+    public String getPassword() {
+        return password;
+    }
 }
