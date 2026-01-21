@@ -6,6 +6,10 @@ import com.jatin.forum.entity.User;
 import com.jatin.forum.repository.CommentRepo;
 import com.jatin.forum.repository.PostRepo;
 import com.jatin.forum.repository.UserRepo;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -44,6 +48,11 @@ public class CommentService {
         throw new RuntimeException("You are not allowed to delete this comment");
         }
         commentRepo.delete(comment.get());
+    }
+
+    public Page<Comment> getCommentByPostId(Long postId, int page,int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC,"createdAt"));
+        return commentRepo.findByPostId(postId, pageable);
     }
 
 }
