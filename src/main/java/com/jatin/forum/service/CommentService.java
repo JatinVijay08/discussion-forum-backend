@@ -10,6 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -26,11 +28,14 @@ public class CommentService {
         this.userRepo = userRepo;
     }
 
-    public Comment CreateComment(Long postID, String content, String userEmail) {
-        User user = userRepo.findByEmail(userEmail);
+    public Comment CreateComment(Long postID, String content) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        User user = userRepo.findByEmail(email);
         if (user == null) {
             throw new RuntimeException("User not found");
         }
+
         Optional<Post> post = postRepo.findById(postID);
         if (post.isEmpty()) {
             throw new RuntimeException("Post not found");
@@ -39,12 +44,15 @@ public class CommentService {
         return commentRepo.save(comment);
     }
 
-    public void deleteComment(Long commentID, String userEmail) {
+    public void deleteComment(Long commentID) {
         Optional<Comment> comment = commentRepo.findById(commentID);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        User user = userRepo.findByEmail(email);
         if (comment.isEmpty()) {
             throw new RuntimeException("Comment not found");
         }
-        if(!comment.get().getUser().getEmail().equals(userEmail)) {
+        if(!comment.get().getUser().getEmail().equals(user.getEmail())) {
         throw new RuntimeException("You are not allowed to delete this comment");
         }
         commentRepo.delete(comment.get());

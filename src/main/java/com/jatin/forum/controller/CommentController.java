@@ -5,8 +5,6 @@ import com.jatin.forum.dto.CreateCommentRequest;
 import com.jatin.forum.entity.Comment;
 import com.jatin.forum.service.CommentService;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -22,16 +20,13 @@ public class CommentController {
 
     @PostMapping("/post/{postId}")
     public Comment addComment(@PathVariable("postId") Long postId, @RequestBody CreateCommentRequest createCommentRequest) {
-
-        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-       return commentService.CreateComment(postId, createCommentRequest.content(),  userEmail);
+       return commentService.CreateComment(postId, createCommentRequest.content());
 
     }
 
     @DeleteMapping("/{commentId}")
     public void deleteComment(@PathVariable("commentId") Long commentId) {
-        String userEmail =  SecurityContextHolder.getContext().getAuthentication().getName();
-        commentService.deleteComment(commentId, userEmail);
+        commentService.deleteComment(commentId);
     }
 
     @GetMapping("/post/{postId}")

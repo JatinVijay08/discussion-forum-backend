@@ -1,8 +1,8 @@
 package com.jatin.forum.entity;
 
-import ch.qos.logback.core.status.InfoStatus;
+
 import jakarta.persistence.*;
-import org.springframework.web.bind.annotation.RestController;
+
 
 import java.time.Instant;
 

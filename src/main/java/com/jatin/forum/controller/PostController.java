@@ -2,7 +2,10 @@ package com.jatin.forum.controller;
 
 import com.jatin.forum.dto.CreatePostRequest;
 import com.jatin.forum.dto.PostResponse;
+import com.jatin.forum.dto.VoteRequest;
+import com.jatin.forum.dto.VoteResponse;
 import com.jatin.forum.service.PostService;
+import com.jatin.forum.service.VoteService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,10 +15,12 @@ import java.util.List;
 @RequestMapping("/api/posts")
 public class PostController {
 
-    private PostService postService;
+    private static PostService postService;
+    private final VoteService voteService;
 
-    public PostController(PostService postService) {
+    public PostController(PostService postService, VoteService voteService) {
         this.postService = postService;
+        this.voteService = voteService;
     }
 
     @GetMapping
@@ -36,6 +41,11 @@ public class PostController {
     @DeleteMapping("/{id}")
     public void deletePostById(@PathVariable Long id){
         postService.deletePostById(id);
+    }
+
+    @PostMapping("/{postId}/votes")
+    public VoteResponse voteOnPost(@PathVariable Long postId, @RequestBody VoteRequest  voteRequest){
+        return voteService.voteOnPost(postId,voteRequest.voteType());
     }
 
 }
