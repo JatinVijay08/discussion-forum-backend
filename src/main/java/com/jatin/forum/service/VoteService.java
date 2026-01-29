@@ -2,11 +2,12 @@ package com.jatin.forum.service;
 
 
 
-import com.jatin.forum.dto.VoteResponse;
+import com.jatin.forum.dto.PostResponse;
 import com.jatin.forum.entity.Post;
 import com.jatin.forum.entity.PostVote;
 import com.jatin.forum.entity.User;
 import com.jatin.forum.entity.VoteType;
+import com.jatin.forum.repository.CommentRepo;
 import com.jatin.forum.repository.PostRepo;
 import com.jatin.forum.repository.PostVoteRepo;
 import com.jatin.forum.repository.UserRepo;
@@ -19,17 +20,19 @@ import java.util.Optional;
 @Service
 public class VoteService {
 
+    private final CommentRepo commentRepo;
     private  final PostVoteRepo postVoteRepo;
     private  final UserRepo userRepo;
     private  final PostRepo postRepo;
 
-    public VoteService(PostVoteRepo postVoteRepo, UserRepo userRepo, PostRepo postRepo) {
+    public VoteService(CommentRepo commentRepo, PostVoteRepo postVoteRepo, UserRepo userRepo, PostRepo postRepo) {
+        this.commentRepo = commentRepo;
         this.postVoteRepo = postVoteRepo;
         this.userRepo = userRepo;
         this.postRepo = postRepo;
     }
 
-    public VoteResponse voteOnPost(Long postId, VoteType voteType) {
+    public PostResponse voteOnPost(Long postId, VoteType voteType) {
            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
            String email = authentication.getName();
            User user = userRepo.findByEmail(email);
@@ -51,10 +54,16 @@ public class VoteService {
                postVoteRepo.save(postVote.get());
            }
 
-           long upvotes = postVoteRepo.countByPostAndVoteType(post.get(),VoteType.upvote);
-           long downvotes = postVoteRepo.countByPostAndVoteType(post.get(),VoteType.downvote);
-           long totalVotes = upvotes - downvotes;
-           return new  VoteResponse(totalVotes);
 
-    }
+        long upvotes = postVoteRepo.countByPostAndVoteType(post.get(), VoteType.upvote);
+        long downvotes = postVoteRepo.countByPostAndVoteType(post.get(), VoteType.downvote);
+
+        long votes = upvotes-downvotes;
+
+        long commentCount = commentRepo.countByPostId(post.get().getId());
+        VoteType voteType1 = postVoteRepo.findByUserAndPost(user,post.get()).map(PostVote::getVoteType).orElse(null);
+        User user1 = post.get().getUser();
+        return new PostResponse(user1.getUsername(),post.get().getId(), post.get().getTitle(), post.get().getContent(), votes, commentCount,voteType1);
+
+}
 }

@@ -2,6 +2,7 @@ package com.jatin.forum.controller;
 
 
 import com.jatin.forum.dto.LoginRequest;
+import com.jatin.forum.dto.LoginResponseDto;
 import com.jatin.forum.dto.RegisterRequest;
 import com.jatin.forum.service.AuthService;
 import jakarta.validation.Valid;
@@ -30,9 +31,9 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@Valid @RequestBody LoginRequest loginRequest) {
-       String token = authService.login(loginRequest);
-       return ResponseEntity.ok(token);
+    public ResponseEntity<LoginResponseDto> login(@Valid @RequestBody LoginRequest loginRequest) {
+      LoginResponseDto loginResponseDto =  authService.login(loginRequest);
+       return ResponseEntity.ok(loginResponseDto);
     }
 
 

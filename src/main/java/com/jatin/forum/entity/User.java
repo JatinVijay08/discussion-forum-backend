@@ -22,6 +22,7 @@ public class User {
     @Column(nullable=false,unique=true)
     private String email;
 
+    @Getter
     private Instant created;
 
     protected User() {}
@@ -32,6 +33,7 @@ public class User {
         this.email = email;
         this.created = Instant.now();
     }
+
 
     public String getPassword() {
         return password;

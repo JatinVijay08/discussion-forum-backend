@@ -2,11 +2,9 @@ package com.jatin.forum.dto;
 
 import java.time.Instant;
 
-public record CommentResponse(
+public record UserResponse(
         String username,
-        Long id,
-        String content,
-        String authorEmail,
+        String email,
         Instant createdAt
 ) {
 }

@@ -34,6 +34,7 @@ public class CommentController {
 
         Page<Comment> comment =  commentService.getCommentByPostId(postId, page, size);
          return comment.map(comment1 -> new CommentResponse(
+                 comment1.getUser().getUsername(),
                 comment1.getId(),
                 comment1.getContent(),
                 comment1.getUser().getEmail(),

@@ -2,6 +2,7 @@ package com.jatin.forum.service;
 
 import com.jatin.forum.JwtUtil;
 import com.jatin.forum.dto.LoginRequest;
+import com.jatin.forum.dto.LoginResponseDto;
 import com.jatin.forum.dto.RegisterRequest;
 import com.jatin.forum.entity.User;
 import com.jatin.forum.repository.UserRepo;
@@ -31,7 +32,7 @@ public class AuthService {
         userRepo.save(user);
     }
 
-    public String login(LoginRequest loginRequest) {
+    public LoginResponseDto login(LoginRequest loginRequest) {
         User user = userRepo.findByEmail(loginRequest.email());
         if (user == null) {
             throw new RuntimeException("User not found");
@@ -40,8 +41,9 @@ public class AuthService {
             throw new RuntimeException("Invalid Credentials");
         }
 
-        return jwtUtil.generateToken(user);
-
+        String token = jwtUtil.generateToken(user);
+        String username = user.getUsername();
+        return new LoginResponseDto(token,username);
     }
 
 

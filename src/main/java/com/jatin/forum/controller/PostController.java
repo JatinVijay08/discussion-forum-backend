@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:5173", allowedHeaders = "*")
 @RestController
 @RequestMapping("/api/posts")
 public class PostController {
@@ -44,8 +45,9 @@ public class PostController {
     }
 
     @PostMapping("/{postId}/votes")
-    public VoteResponse voteOnPost(@PathVariable Long postId, @RequestBody VoteRequest  voteRequest){
+    public PostResponse voteOnPost(@PathVariable Long postId, @RequestBody VoteRequest  voteRequest){
         return voteService.voteOnPost(postId,voteRequest.voteType());
     }
+
 
 }
