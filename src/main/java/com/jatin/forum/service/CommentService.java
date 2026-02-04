@@ -1,5 +1,6 @@
 package com.jatin.forum.service;
 
+import com.jatin.forum.dto.CreateCommentRequest;
 import com.jatin.forum.entity.Comment;
 import com.jatin.forum.entity.Post;
 import com.jatin.forum.entity.User;
@@ -28,7 +29,7 @@ public class CommentService {
         this.userRepo = userRepo;
     }
 
-    public Comment CreateComment(Long postID, String content) {
+    public Comment CreateComment(Long postID, CreateCommentRequest createCommentRequest) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         User user = userRepo.findByEmail(email);
@@ -40,8 +41,13 @@ public class CommentService {
         if (post.isEmpty()) {
             throw new RuntimeException("Post not found");
         }
-        Comment comment = new Comment(content, user, post.get());
-        return commentRepo.save(comment);
+        Comment comment = new Comment(createCommentRequest.content(), user, post.get());
+
+        if(createCommentRequest.parentId() != null) {
+            Comment parent = commentRepo.findById(createCommentRequest.parentId()).orElseThrow(()->new RuntimeException("Parent comment not found"));
+            comment.setParentComment(parent);
+        }
+       return commentRepo.save(comment);
     }
 
     public void deleteComment(Long commentID) {

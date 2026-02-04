@@ -20,7 +20,7 @@ public class CommentController {
 
     @PostMapping("/post/{postId}")
     public Comment addComment(@PathVariable("postId") Long postId, @RequestBody CreateCommentRequest createCommentRequest) {
-       return commentService.CreateComment(postId, createCommentRequest.content());
+        return commentService.CreateComment(postId, createCommentRequest);
 
     }
 
@@ -38,7 +38,8 @@ public class CommentController {
                 comment1.getId(),
                 comment1.getContent(),
                 comment1.getUser().getEmail(),
-                comment1.getCreatedAt()
+                comment1.getCreatedAt(),
+                 comment1.getParentComment()
         ));
 
     }

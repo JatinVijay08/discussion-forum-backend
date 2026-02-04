@@ -27,6 +27,10 @@ public class Comment {
     @Column(nullable = false)
     private Instant createdAt = Instant.now();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_comment_Id")
+    private Comment parentComment;
+
     protected Comment() {
     }
     public Comment(String content, User user, Post post) {
@@ -53,5 +57,13 @@ public class Comment {
 
     public Instant getCreatedAt() {
         return createdAt;
+    }
+
+    public Comment getParentComment() {
+        return parentComment;
+    }
+
+    public void setParentComment(Comment parentComment) {
+        this.parentComment = parentComment;
     }
 }
