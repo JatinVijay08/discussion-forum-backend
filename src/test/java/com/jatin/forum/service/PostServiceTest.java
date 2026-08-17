@@ -6,6 +6,7 @@ import com.jatin.forum.entity.Post;
 import com.jatin.forum.entity.User;
 import com.jatin.forum.exception.ResourceNotFoundException;
 import com.jatin.forum.repository.CommentRepo;
+import com.jatin.forum.repository.CommentVoteRepo;
 import com.jatin.forum.repository.PostRepo;
 import com.jatin.forum.repository.PostVoteRepo;
 import com.jatin.forum.strategy.FeedStrategy;
@@ -33,6 +34,7 @@ public class PostServiceTest {
     @Mock private PostRepo postRepo;
     @Mock private PostVoteRepo postVoteRepo;
     @Mock private CommentRepo commentRepo;
+    @Mock private CommentVoteRepo commentVoteRepo;
     @Mock private FeedCacheService feedCacheService;
     @Mock private CurrentUserService currentUserService;
     @Mock private PostMapper postMapper;
@@ -46,7 +48,7 @@ public class PostServiceTest {
     @BeforeEach
     void setUp() {
         Map<String, FeedStrategy> strategyMap = Map.of("new", mockFeedStrategy);
-        postService = new PostService(postRepo, postVoteRepo, commentRepo, feedCacheService, currentUserService, postMapper, strategyMap);
+        postService = new PostService(postRepo, postVoteRepo, commentRepo, commentVoteRepo, feedCacheService, currentUserService, postMapper, strategyMap);
 
         user = new User();
         user.setId(10L);
@@ -132,6 +134,7 @@ public class PostServiceTest {
         postService.deletePostById(postId);
 
         verify(postVoteRepo, times(1)).deleteByPostId(postId);
+        verify(commentVoteRepo, times(1)).deleteByComment_PostId(postId);
         verify(commentRepo, times(1)).deleteByPostId(postId);
         verify(postRepo, times(1)).deleteById(postId);
         verify(feedCacheService, times(1)).evictFeed(FeedCacheService.TYPE_NEW, 10);
