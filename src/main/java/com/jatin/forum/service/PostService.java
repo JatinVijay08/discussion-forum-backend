@@ -8,6 +8,7 @@ import com.jatin.forum.entity.PostVote;
 import com.jatin.forum.entity.User;
 import com.jatin.forum.entity.VoteType;
 import com.jatin.forum.repository.CommentRepo;
+import com.jatin.forum.repository.CommentVoteRepo;
 import com.jatin.forum.repository.PostRepo;
 import com.jatin.forum.repository.PostVoteRepo;
 
@@ -29,6 +30,7 @@ import java.util.*;
 public class PostService {
     private final PostVoteRepo postVoteRepo;
     private final CommentRepo commentRepo;
+    private final CommentVoteRepo commentVoteRepo;
     private final PostRepo postRepo;
     private final FeedCacheService feedCacheService;
     private final CurrentUserService currentUserService;
@@ -36,10 +38,11 @@ public class PostService {
     private final Map<String, FeedStrategy>  feedStrategyMap;
 
 
-    public PostService(PostRepo postRepo, PostVoteRepo postVoteRepo, CommentRepo commentRepo, FeedCacheService feedCacheService, CurrentUserService currentUserService, PostMapper postMapper, Map<String, FeedStrategy> feedStrategyMap) {
+    public PostService(PostRepo postRepo, PostVoteRepo postVoteRepo, CommentRepo commentRepo, CommentVoteRepo commentVoteRepo, FeedCacheService feedCacheService, CurrentUserService currentUserService, PostMapper postMapper, Map<String, FeedStrategy> feedStrategyMap) {
         this.postRepo = postRepo;
         this.postVoteRepo = postVoteRepo;
         this.commentRepo = commentRepo;
+        this.commentVoteRepo = commentVoteRepo;
         this.feedCacheService = feedCacheService;
         this.currentUserService = currentUserService;
         this.postMapper = postMapper;
@@ -112,6 +115,7 @@ public class PostService {
            throw new AccessDeniedException("Not allowed to delete post");
         }
         postVoteRepo.deleteByPostId(postId);
+        commentVoteRepo.deleteByComment_PostId(postId); // must delete comment votes before comments
         commentRepo.deleteByPostId(postId);
         postRepo.deleteById(postId);
 
